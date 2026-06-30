@@ -61,10 +61,12 @@ class OpenAIBackend(Backend):
         self.timeout = timeout
 
         client_kwargs: dict = {
-            "api_key": api_key,
             "timeout": timeout,
             "max_retries": 2,
         }
+        # Only pass api_key if it's non-empty — empty string overrides env var
+        if api_key:
+            client_kwargs["api_key"] = api_key
         if base_url:
             client_kwargs["base_url"] = base_url
 

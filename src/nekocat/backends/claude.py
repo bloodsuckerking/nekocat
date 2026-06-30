@@ -58,12 +58,16 @@ class AnthropicBackend(Backend):
         self.temperature = temperature
         self.timeout = timeout
 
-        self._client = AsyncAnthropic(
-            api_key=api_key,
-            base_url=base_url,
-            timeout=timeout,
-            max_retries=2,
-        )
+        client_kwargs: dict = {
+            "timeout": timeout,
+            "max_retries": 2,
+        }
+        if api_key:
+            client_kwargs["api_key"] = api_key
+        if base_url:
+            client_kwargs["base_url"] = base_url
+
+        self._client = AsyncAnthropic(**client_kwargs)
 
         self._capabilities = BackendCapabilities(
             streaming=True,
