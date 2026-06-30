@@ -268,3 +268,6 @@ def _run_chat(
 def main() -> None:
     """Entry point for the nekocat CLI."""
     app()
+
+if __name__ == "__main__":
+    main()
