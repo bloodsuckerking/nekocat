@@ -11,6 +11,18 @@ Commands:
 
 from __future__ import annotations
 
+import os
+from pathlib import Path
+
+# Load .env into os.environ BEFORE anything else, so that API keys like
+# OPENAI_API_KEY / ANTHROPIC_API_KEY are available to the SDKs.
+from dotenv import load_dotenv
+
+_env_paths = [Path.cwd() / ".env", Path(__file__).resolve().parent.parent.parent.parent / ".env"]
+for _p in _env_paths:
+    if _p.is_file():
+        load_dotenv(_p)
+
 import asyncio
 from pathlib import Path
 from typing import Optional
