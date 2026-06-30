@@ -1,0 +1,78 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "nekocat"
+version = "0.1.0"
+description = "🐱 猫娘对话系统 SDK — 可插拔多 AI 后端的 CLI 猫娘聊天机器人"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+authors = [
+    { name = "nekocat contributors" }
+]
+keywords = ["catgirl", "chat", "cli", "ai", "llm", "neko"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Communications :: Chat",
+    "Topic :: Games/Entertainment",
+]
+
+dependencies = [
+    "pydantic>=2.8",
+    "pydantic-settings>=2.5",
+    "httpx>=0.27",
+    "rich>=13.9",
+    "typer>=0.12",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+anthropic = ["anthropic>=0.34"]
+openai = ["openai>=1.50"]
+ollama = ["ollama>=0.4"]
+all = ["nekocat[anthropic,openai,ollama]"]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+    "pytest-cov>=5.0",
+    "ruff>=0.5",
+    "mypy>=1.11",
+]
+
+[project.scripts]
+nekocat = "nekocat.cli.app:main"
+
+[project.urls]
+Homepage = "https://github.com/nekocat-dev/nekocat"
+Repository = "https://github.com/nekocat-dev/nekocat"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/nekocat"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+addopts = ["-v", "--tb=short"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+ignore_missing_imports = true
