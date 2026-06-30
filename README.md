@@ -7,82 +7,66 @@
 可插拔多 AI 后端的 CLI 猫娘聊天机器人。在终端中与可爱的猫娘角色实时流式对话。
 
 <p align="center">
-  <img src="https://img.shields.io/badge/AI-Claude%20%7C%20OpenAI%20%7C%20DeepSeek%20%7C%20Ollama-orange" alt="AI Backends">
+  <img src="https://img.shields.io/badge/AI-DeepSeek%20%7C%20Claude%20%7C%20OpenAI%20%7C%20Ollama-orange" alt="AI Backends">
 </p>
 
 ## ✨ 特性
 
-- 🎭 **猫娘角色系统** — 内置 3 种性格预设（元气/傲娇/冷酷），支持自定义 YAML 角色
-- 🔌 **可插拔 AI 后端** — Claude / OpenAI / DeepSeek / Ollama / Mock，一键切换
+- 🎭 **猫娘角色系统** — 内置 3 种性格预设（元气/傲娇/冷酷），支持自定义 YAML
+- 🔌 **可插拔 AI 后端** — DeepSeek / Claude / OpenAI / Ollama / Mock，一键切换
 - 💬 **流式打字机效果** — Rich 终端渲染，逐字输出，沉浸式对话体验
 - 🎨 **多款颜色主题** — pink / purple / mint / sunset
-- ⚙️ **灵活配置** — YAML 文件 / 环境变量 / CLI 参数，按优先级叠加
+- ⚙️ **灵活配置** — `.env` 文件 / YAML / 环境变量 / CLI 参数
 - 🧪 **零成本测试** — 内置 MockBackend，无需 API Key 即可体验
 
 ## 📦 安装
 
 ```bash
-# 克隆仓库
 git clone https://github.com/bloodsuckerking/nekocat.git
 cd nekocat
-
-# 基础安装（仅 Mock 后端）
-pip install -e .
-
-# 安装特定后端
-pip install -e ".[anthropic]"   # Claude
-pip install -e ".[openai]"      # OpenAI / DeepSeek
-pip install -e ".[ollama]"      # 本地 Ollama
-
-# 安装全部
-pip install -e ".[all]"
+pip install -e ".[openai]"   # DeepSeek / OpenAI 后端（推荐）
 ```
+
+> 可选：`pip install -e ".[anthropic]"` (Claude) / `pip install -e ".[ollama]"` (本地 Ollama)
 
 ### 配置 API Key
 
 ```bash
-# 复制模板并填入你的 API key
 cp .env.example .env
 ```
 
-`.env` 示例：
+编辑 `.env` 填入你的 API key：
 
 ```bash
-# DeepSeek（推荐，性价比高）
+# DeepSeek（推荐）— 在 https://platform.deepseek.com 获取
 OPENAI_API_KEY=sk-your-deepseek-key
 
-# 或 Claude
+# 或用 Claude
 ANTHROPIC_API_KEY=sk-ant-your-key
-
-# 或 OpenAI
-OPENAI_API_KEY=sk-your-openai-key
 ```
 
-> **注意**：DeepSeek 兼容 OpenAI SDK 格式，使用 `OPENAI_API_KEY` 即可。
+> CLI 启动时会自动从 `.env` 加载环境变量，无需手动 `export`。
 
 ## 🚀 快速开始
 
 ```bash
-# 测试模式（无需 API Key，内置 Mock 后端）
-python -m nekocat.cli.app chat
-
-# DeepSeek V4 Pro（推荐）
-python -m nekocat.cli.app chat --backend deepseek --model deepseek-v4-pro
+# DeepSeek V4 Pro（推荐，性价比最高）
+python -m nekocat chat --backend deepseek --model deepseek-v4-pro
 
 # DeepSeek V4 Flash（更快更便宜）
-python -m nekocat.cli.app chat --backend deepseek --model deepseek-v4-flash
+python -m nekocat chat --backend deepseek --model deepseek-v4-flash
 
 # Claude
-python -m nekocat.cli.app chat --backend claude --model claude-sonnet-4-6
+python -m nekocat chat --backend claude --model claude-sonnet-4-6
 
 # OpenAI
-python -m nekocat.cli.app chat --backend openai --model gpt-4o-mini
+python -m nekocat chat --backend openai --model gpt-4o-mini
 
-# 使用傲娇猫娘
-python -m nekocat.cli.app chat --backend deepseek --persona tsundere_neko
+# 测试模式（无需 API Key）
+python -m nekocat chat --backend mock
 
-# 使用自定义角色
-python -m nekocat.cli.app chat --persona-file ./my-neko.yaml
+# 傲娇猫娘
+python -m nekocat chat --backend deepseek --persona tsundere_neko
 ```
 
 ## 🎭 角色预设
@@ -94,60 +78,26 @@ python -m nekocat.cli.app chat --persona-file ./my-neko.yaml
 | `kuudere_neko` | 零 (Rei) | 冷酷 | 冷静从容的银白虎斑猫娘 |
 
 ```bash
-# 查看所有角色
-python -m nekocat.cli.app persona-list
-
-# 查看角色详情
-python -m nekocat.cli.app persona-show classic_neko
-
-# 验证自定义角色
-python -m nekocat.cli.app persona-validate ./my-neko.yaml
+python -m nekocat persona-list              # 查看所有角色
+python -m nekocat persona-show kuudere_neko # 查看角色详情
+python -m nekocat persona-validate my.yaml  # 验证自定义角色
 ```
 
 ## 🔌 后端
 
 ```bash
-# 列出可用后端
-python -m nekocat.cli.app backends
+python -m nekocat backends   # 列出可用后端
 ```
 
-| 后端 | 命令 | 需要 |
-|------|------|------|
-| Mock | `--backend mock` | 无 |
+| 后端 | 命令 | API Key |
+|------|------|---------|
 | DeepSeek | `--backend deepseek` | `OPENAI_API_KEY` |
 | Claude | `--backend claude` | `ANTHROPIC_API_KEY` |
 | OpenAI | `--backend openai` | `OPENAI_API_KEY` |
-| Ollama | `--backend ollama` | 本地 Ollama 服务 |
-
-## ⚙️ 配置
-
-创建 `nekocat.yaml`（可选）：
-
-```yaml
-backend:
-  provider: deepseek
-  model: deepseek-v4-pro
-  temperature: 0.9
-
-persona:
-  preset: classic_neko
-
-cli:
-  typewriter_speed: 0.02
-  color_theme: pink
-```
-
-环境变量（优先级高于 YAML）：
-
-```bash
-export NEKOCAT_BACKEND__PROVIDER=deepseek
-export NEKOCAT_BACKEND__MODEL=deepseek-v4-pro
-export NEKOCAT_PERSONA__PRESET=tsundere_neko
-```
+| Ollama | `--backend ollama` | 本地服务 |
+| Mock | `--backend mock` | 无需 |
 
 ## ⌨️ 对话命令
-
-在聊天中使用 `/` 前缀命令：
 
 | 命令 | 功能 |
 |------|------|
@@ -209,33 +159,29 @@ endings:
   - "nya~"
 ```
 
-## 🧪 运行测试
-
 ```bash
-pip install -e ".[dev]"
-pytest tests/ -v
+python -m nekocat chat --persona-file ./my-neko.yaml
 ```
 
 ## 📁 项目结构
 
 ```
 nekocat/
-├── pyproject.toml                # Python 项目配置
-├── .env.example                  # 环境变量模板
-├── README.md
+├── pyproject.toml              # Python 项目配置
+├── .env.example                # 环境变量模板
 │
 ├── src/nekocat/
-│   ├── core/                     # NekoChat 编排器、会话、对话历史
-│   ├── persona/                  # 角色模型 + 提示词生成 + YAML 预设
-│   │   └── presets/              # classic_neko / tsundere_neko / kuudere_neko
-│   ├── backends/                 # AI 后端 ABC + mock/claude/openai/ollama/deepseek
-│   ├── cli/                      # Typer CLI + Rich 渲染器 + REPL 循环
-│   ├── config/                   # pydantic-settings 配置管理
+│   ├── core/                   # NekoChat 编排器、会话、对话历史
+│   ├── persona/                # 角色模型 + 提示词生成 + YAML 预设
+│   │   └── presets/            # classic / tsundere / kuudere
+│   ├── backends/               # AI 后端 (mock/claude/openai/ollama/deepseek)
+│   ├── cli/                    # Typer CLI + Rich 渲染 + REPL
+│   ├── config/                 # pydantic-settings 配置
 │   └── utils/
 │
-└── tests/                        # 61 个测试
+└── tests/                      # 61 个测试
 ```
 
 ## 📄 许可
 
-MIT License
+MIT
